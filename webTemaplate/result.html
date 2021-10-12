@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Result</title>
+  </head>
+  <body>
+    <div class="container mt-3">
+      <img src="" id="main_image" class="rounded mx-auto d-block img-thumbnail" width="160px" alt="...">
+
+      <h1 id="verified" style="color: #06743A; font-weight: bold;" class="text-center my-3">USER IS VERIFIED</h1>
+
+      <h2 id="result" style="color: #F19668; font-weight: bold;" class="my-5 text-center">Faces and Personal deatils are matched</h2>
+
+      <div class="data text-center">
+        <div class="row">
+          <div class="col-md-6 my-3">
+            <h2>First Name: <span id="fname" style="font-weight: bold;"> </span></h2>
+          </div>
+          <div class="col-md-6 my-3">
+            <h2>Date of Birth: <span id="dob" style="font-weight: bold;">  </span>
+          </div>
+
+          <div class="col-md-6 my-3">
+            <h2>Last Name: <span id="lname" style="font-weight: bold;"></span></h2>
+          </div>
+          <div class="col-md-6 my-3">
+            <h2>Date of Expiry: <span id="doe" style="font-weight: bold;">  </span>
+          </div>
+
+          <div class="col-md-6 my-3">
+            <h2>Country: <span id="country" style="font-weight: bold;"></span></h2>
+          </div>
+          <div class="col-md-6 my-3">
+            <h2>Sex: <span id="sex" style="font-weight: bold;">  </span>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script>
+      $(document).ready(function() {
+        var data = JSON.parse(localStorage.getItem('data'));
+        // var data = window.localStorage.getItem('data');
+        // Clear storage
+        // window.localStorage.clear();
+        console.log(data);
+        console.log(data.final_result.message);
+
+        $("#fname").html(data.user_details.FirstName);
+        $("#lname").html(data.user_details.LastName);
+        $("#dob").html(data.user_details.DateOfBirth);
+        $("#doe").html(data.user_details.DateOfExpiration);
+        $("#country").html(data.user_details.Nationality);
+        $("#sex").html(data.user_details.Sex);
+        $("#result").html(data.results_of_face_verfication.message);
+        $("#verified").html(data.final_result.message);
+
+        if (data.final_result.status) {
+          $("#main_image").attr("src","images/approved.png");
+
+        }
+        else{
+
+          $("#main_image").attr("src","images/rejected.jpg");
+          $("#verified").addClass('text-danger');
+        }
+
+        
+
+
+      });
+    </script>
+  </body>
+</html>

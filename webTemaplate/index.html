@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>card</title>
+     <!-- Bootstrap CSS -->
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
+
+    <link rel="stylesheet" href="style.css" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.25/webcam.min.js"></script>
+    <script
+      class="jsbin"
+      src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"
+    ></script>
+    <script
+      class="jsbin"
+      src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js"
+    ></script>
+  </head>
+  <body>
+    <section class="page">
+      
+      <form
+        id="myForm"
+        method="POST"
+        enctype="multipart/form-data"
+        onsubmit="formSubmit(event)"
+      >
+      <!-- action="http://0.0.0.0:5000/verifycustomer" -->
+        <div class="container">
+          <!-- <div class="logo">
+            <img src="images/logo.svg" alt="logo" width="150px" />
+          </div> -->
+
+          <div id="my_camera" style="margin: 0 auto"></div>
+          <br />
+          
+          <div class="content-holder">
+            <div class="img-preview">
+              <div id="results"></div>
+            </div>
+            <div style="text-align-last: center;margin-bottom: 20px;"><div id="loader" class="lds-circle hide"><div></div></div></div>
+            
+            <div class="main" id="main">
+              <div class="row">
+                <div class="form-holder">
+                  <div class="button-1">
+                    <input
+                      type="file"
+                      id="passport"
+                      name="passport"
+                      onchange="readURL(this);"
+                    />
+                    <label for="passport"
+                      ><img
+                        src="images/upload-icon.svg"
+                        alt=""
+                        width="15"
+                        height="15"
+                      />
+                      Upload Passport</label
+                    >
+                  </div>
+                </div>
+                <!-- <div class="form-holder">
+                  <div class="button-1">
+                    <label for="myfile2"
+                      ><img
+                        src="images/upload-icon.svg"
+                        alt=""
+                        width="15"
+                        height="15"
+                      />
+                      Upload Back</label
+                    >
+                    <input
+                      type="file"
+                      id="myfile2"
+                      name="back_card"
+                      onchange="readURL(this);"
+                    />
+                  </div>
+                </div> -->
+                
+                <div class="form-holder">
+                  <button
+                    class="btn"
+                    type="button"
+                    class="btn btn-primary pull-right"
+                    onClick="take_snapshot()"
+                  >
+                    <img
+                      src="images/camera.svg"
+                      alt=""
+                      width="15"
+                      height="15"
+                    />Take Selfie
+                  </button>
+                  <input type="hidden" name="selfie" id="selfie" />
+                </div>
+              </div>
+            </div>
+            <div class="subm-sec" id="subm-sec" >
+              <!-- <div class="form-holder">
+                <select id="province" name="province">
+                  <option value="Alberta">ALBERTA</option>
+                  <option value="Ontario">ONTARIO</option>
+                  <option value="Manitoba">MANITOBA</option>
+                </select>
+              </div> -->
+              <div class="bottom-button"  id="subm-btn"></div>
+                <button type="submit" id="btn" value="submit">SUBMIT</button>
+              </div>
+              <p class="text-danger text-center" id="error"></p>
+            </div>
+          </div>
+        </div>
+      </form>
+    </section>
+  </body>
+  <script>
+    "use strict";
+
+    Webcam.set({
+      width: 520,
+      height: 400,
+      image_format: "jpeg",
+      jpeg_quality: 100,
+      flip_horiz: true,
+    });
+    Webcam.attach("#my_camera");
+    function take_snapshot() {
+      Webcam.snap(function (data_uri) {
+        $("#selfie").val(data_uri);
+
+        document.getElementById("results").innerHTML =
+          '<img src="' + data_uri + '"/>';
+
+      });
+    }
+
+    // image selector
+    function readURL(input) {
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+
+          $($.parseHTML("<img>"))
+            .attr("src", event.target.result)
+            .appendTo(".img-preview");
+        };
+
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+    function formSubmit(e) {
+			var el1 = document.getElementById("main");
+			el1.classList.add("hide");
+      var el2 = document.getElementById("subm-sec");
+			el2.classList.add("hide");
+      var el3 = document.getElementById("subm-btn");
+			el3.classList.add("hide");
+      
+			var el = document.getElementById("loader");
+			el.classList.remove("hide");
+
+			elementID(e.submitter.id);
+		}
+
+		function elementID(val) {
+			return val;
+		}
+
+    $(document).ready(function () {
+
+    $("#btn").click(function (event) {
+        //stop submit the form, we will post it manually.
+        event.preventDefault();
+        // Get form
+        $("#main").addClass('hide');
+        $("#subm-sec").addClass('hide');
+        $("#subm-btn").addClass('hide');
+        $("#loader").removeClass('hide');
+        var form = $('#myForm')[0];
+        // Create an FormData object 
+        var data = new FormData(form);
+
+        // disabled the submit button
+        // $("#subbtn").prop("disabled", true);
+        $.ajax({
+            type: "POST",
+            enctype: 'multipart/form-data',
+            url: "http://0.0.0.0:5005/verifyuser",
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+              // localStorage.setItem('user', JSON.stringify(user));
+                window.localStorage.setItem('data', JSON.stringify(data));
+                window.location = 'result.html';
+
+            },
+            error: function (e) {
+              $("#error").html('Something went wrong');
+              $("#main").removeClass('hide');
+              $("#subm-sec").removeClass('hide');
+              $("#subm-btn").removeClass('hide');
+              $("#loader").addClass('hide');
+
+            }
+        });
+
+    });
+
+});
+
+
+  </script>
+</html>
